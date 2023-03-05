@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { setCookie } from 'cookies-next'
 import { useRouter } from 'next/router'
 
-import styles from './signin.module.scss'
 
 const SignIn: NextPage = (props) => {
   const [userInfo, setUserInfo] = useState({ email: '', password: '' })
@@ -42,6 +41,7 @@ const SignIn: NextPage = (props) => {
           className="input"
           placeholder="Enter Username"
           name="uname"
+          value={userInfo.email}
           onChange={(event) => (userInfo.email = event.target.value)}
           required
         />
@@ -52,6 +52,7 @@ const SignIn: NextPage = (props) => {
           type="password"
           className="input"
           placeholder="Enter Password"
+          value={userInfo.password}
           onChange={(event) => (userInfo.password = event.target.value)}
           name="psw"
           required
