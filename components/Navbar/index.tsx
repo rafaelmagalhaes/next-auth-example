@@ -1,11 +1,22 @@
 import Link from 'next/link'
-import { useState } from 'react'
 import { removeCookies } from 'cookies-next'
+import { useAuthStore } from '~/store/useAuthStore'
+import { useRouter } from 'next/router'
 export default function Navbar() {
-  const [authenticated, setAuthenticated] = useState(false)
+  const router = useRouter()
+
+  // import state values from useAuthStore
+  const authenticated = useAuthStore((state) => state.authenticated)
+  const setAuthentication = useAuthStore((state) => state.setAuthentication)
+  const setUser = useAuthStore((state) => state.setUser)
+
   const logout = () => {
     removeCookies(`token`)
+    setAuthentication(false)
+    setUser({})
+    router.push('/auth/signin')
   }
+
   return (
     <header>
       <ul>
@@ -14,7 +25,7 @@ export default function Navbar() {
         </li>
         {authenticated ? (
           <li style={{ float: 'right' }}>
-            <a onClick={logout}>Logout</a>
+            <a onClick={logout}> Logout </a>
           </li>
         ) : (
           <li style={{ float: 'right' }}>

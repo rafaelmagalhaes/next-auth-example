@@ -2,13 +2,19 @@ import { NextPage } from 'next'
 import { useState } from 'react'
 import { setCookie } from 'cookies-next'
 import { useRouter } from 'next/router'
-
+import { useAuthStore } from '~/store/useAuthStore'
 
 const SignIn: NextPage = (props) => {
-  const [userInfo, setUserInfo] = useState({ email: '', password: '' })
+  // set UserInfo state with inital values
+  const [userInfo] = useState({ email: 'kminchelle', password: '0lelplR' })
   const router = useRouter()
 
+  // import state from AuthStore
+  const setUser = useAuthStore((state) => state.setUser)
+  const setAuthentication = useAuthStore((state) => state.setAuthentication)
+
   const login = async () => {
+    // do a post call to the auth endpoint
     const res = await fetch('https://dummyjson.com/auth/login', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
@@ -18,15 +24,22 @@ const SignIn: NextPage = (props) => {
       }),
     })
 
+    // check if response was ok
     if (!res.ok) {
       return console.error(res)
     }
+    // retrieve data from the response
     const data = await res.json()
+
+    // check if we have data
     if (data) {
-      setCookie('token', data?.token)
-      router.push('/')
+      setUser(data) // set data to our user state
+      setAuthentication(true) // set our authentication state to true
+      setCookie('token', data?.token) // set token to the cookie
+      router.push('/') // redirect to home page
     }
   }
+
   return (
     <div>
       <div className="title">
